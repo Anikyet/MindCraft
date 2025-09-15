@@ -1,0 +1,35 @@
+# Node modules (all projects)
+node_modules/
+
+# Environment files (all projects)
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+coverage/          # test coverage output
+.tmp/              # temporary folders
+.cache/            # cache (like Vite, Babel, etc.)
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS / IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Package managers
+.pnpm-store/
