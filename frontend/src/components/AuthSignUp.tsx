@@ -24,7 +24,7 @@ export const AuthSignUp = () => {
   }
 
   return (
-    <div className="bg-slate-100 h-screen flex justify-center items-center flex-col ">
+    <div className="  h-screen flex justify-center items-center flex-col ">
       <div className="w-full flex flex-col ">
         <div className="">
           <div className=" text-3xl  font-bold text-center">
@@ -107,7 +107,6 @@ function LablelledInput({
       <input
         onChange={onChange}
         type={type}
-        id="first_name"
         className="bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-200 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-950 dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder={placeholder}
         required

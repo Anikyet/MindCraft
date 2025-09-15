@@ -15,9 +15,11 @@ export const blogRouter = new Hono<{
 
 blogRouter.use('/*', async (c, next) => {
     const authHeader = c.req.header("Authorization")|| "";
-    const token = authHeader.split(" ")[1];
-    const response = await verify(token, c.env.JWT_SECRET);
-    if (response) {
+    
+    try{
+        const token = authHeader.split(" ")[1];
+        const response = await verify(token, c.env.JWT_SECRET);
+            if (response) {
         c.set("userId",response.id as string);
         await next();
     } else {
@@ -25,6 +27,10 @@ blogRouter.use('/*', async (c, next) => {
             msg: "Unauthorised access"
         })
     }
+    } catch (e){
+        c.json({message:"wrong/empty token"})
+    }
+
 });
 
 
