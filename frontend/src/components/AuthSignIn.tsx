@@ -3,7 +3,7 @@ import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { useRecoilState} from "recoil";
+import { useSetRecoilState} from "recoil";
 import { authAtom } from "../AtomStore/LoginAuth";
 
 export const AuthSignIn = () => {
@@ -12,7 +12,7 @@ export const AuthSignIn = () => {
     password: "",
   });
   const navigate = useNavigate();
-  const [auth, setAuth] = useRecoilState(authAtom);
+  const setAuth = useSetRecoilState(authAtom);
 
   async function sendRequest() {
     try {
