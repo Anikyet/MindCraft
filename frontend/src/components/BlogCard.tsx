@@ -5,7 +5,7 @@ interface BlogCArdProps {
   authorName: string;
   title: string;
   content: string;
-  publishedDate: string;
+  createdAt: any;
 }
 
 export const BlogCard = ({
@@ -13,10 +13,10 @@ export const BlogCard = ({
   authorName,
   title,
   content,
-  publishedDate,
+  createdAt,
 }: BlogCArdProps) => {
   return (
-    <Link to={`/blog/${id}`} >
+    <Link to={`/post/${id}`} >
     <div className=" p-4 border-b border-slate-200  pb-4 cursor-pointer">
       <div className="flex gap-2 mb-1">
         <div className="flex justify-center flex-col">
@@ -27,7 +27,11 @@ export const BlogCard = ({
           {" "}
           <Circle />{" "}
         </div>
-        <div className="font-extralight text-slate-500 text-sm">{publishedDate}</div>
+        <div className="font-extralight text-slate-500 text-sm">  {new Date(createdAt).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })}</div>
       </div>
       <div className="text-xl font-bold text-slate-900">{title}</div>
       <div className="text-md font-thin">{content.slice(0, 500) + "..."}</div>

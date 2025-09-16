@@ -6,8 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
+
 
 datasource db {
   provider = "postgresql"
@@ -19,7 +19,9 @@ model User {
   email    String @unique
   name     String
   password String
-  posts    Post[] 
+  posts    Post[]
+  comments Comment[] 
+  fav       Fav[]
 }
 
 model Post{
@@ -28,5 +30,29 @@ model Post{
   content String
   published Boolean @default(false)
   authorId String
+  createdAt DateTime @default(now())
   author User @relation(fields: [authorId], references: [id])
+  comments  Comment[]
+  fav     Fav[]
 }
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  authorId String
+  postId String
+
+  post   Post @relation(fields: [postId], references: [id])
+  author   User @relation(fields: [authorId], references: [id])
+}
+
+model Fav {
+  authorId String 
+  postId   String
+  
+  author User @relation(fields: [authorId], references: [id])
+  post   Post @relation(fields: [postId], references: [id])
+  @@id([authorId, postId])
+}
+

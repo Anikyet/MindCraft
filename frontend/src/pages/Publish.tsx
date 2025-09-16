@@ -11,16 +11,31 @@ export const Publish = () => {
   const simpleMdeRef = useRef<EasyMDE | null>(null);
   const editorInitialized = useRef(false);
 
-  const [loading, setLoading] = useState(false); // ✅ keep as state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (value: string) => {
     contentRef.current = value;
   };
 
-  const handleSubmit = async () => {
-    const title = titleRef.current?.value || "";
-    const content = contentRef.current || "";
+  function saveDraft() {
+    const data = {
+      title: titleRef.current?.value || "",
+      content: contentRef.current || "",
+      published: false,
+    };
+    handleSubmit(data);
+  }
 
+  function publishBlog(){
+       const data = {
+      title: titleRef.current?.value || "",
+      content: contentRef.current || "",
+      published: true,
+    };
+    handleSubmit(data); 
+  }
+
+  const handleSubmit = async ({ title, content, published }: any) => {
     if (!title || !content) {
       alert("Title and content are required");
       return;
@@ -31,8 +46,8 @@ export const Publish = () => {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `${BACKEND_URL}/api/v1/blog`,
-        { title, content },
+        `${BACKEND_URL}/api/v1/post/blog/create`,
+        { title, content, published },
         {
           headers: {
             Authorization: `${token}`,
@@ -41,7 +56,7 @@ export const Publish = () => {
         }
       );
 
-      alert("Post created successfully!");
+      alert("Done!");
 
       if (titleRef.current) titleRef.current.value = "";
       contentRef.current = "";
@@ -98,13 +113,19 @@ export const Publish = () => {
           ],
         }}
       />
-
       <button
-        onClick={handleSubmit}
+        onClick={saveDraft}
         disabled={loading}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        className="px-4 py-2 mx-4 bg-slate-400 text-white rounded-lg hover:bg-slate-500 disabled:opacity-50"
       >
-        {loading ? "Publishing..." : "Publish Post"}
+        {loading ? "Processing....." : "Draft Post"}
+      </button>
+      <button
+        onClick={publishBlog}
+        disabled={loading}
+        className="px-4 py-2 mx-4 bg-black text-white rounded-lg hover:bg-slate-800 disabled:opacity-50"
+      >
+        {loading ? "Processing......." : "Publish Post"}
       </button>
     </div>
   );

@@ -1,0 +1,35 @@
+
+
+import {usePublishedBlogs } from "../hooks";
+import { CompleteBlog } from "../components/CompleteBlog";
+
+export const Dashboard = () => {
+  const { loading, publishedBlogs } = usePublishedBlogs();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-xl font-bold">
+        Loading blogs...
+      </div>
+    );
+  }
+
+  if (!publishedBlogs || publishedBlogs.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen text-xl font-bold">
+        No published blogs found.
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-10 px-10 py-10">
+      <p className=" italic font-bold text-md text-slate-600">All your Published Blogs</p>
+      {publishedBlogs.map((blog) => (
+        <div key={blog.id} className="border rounded-xl shadow-md p-5">
+          <CompleteBlog blog={blog} />
+        </div>
+      ))}
+    </div>
+  );
+};

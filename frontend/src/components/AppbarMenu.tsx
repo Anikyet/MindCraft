@@ -1,9 +1,9 @@
 import { useSetRecoilState } from "recoil";
 import { authAtom } from "../AtomStore/LoginAuth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export const LogOut = () => {
+export const AppbarMenu = () => {
   const setAuth = useSetRecoilState(authAtom);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ export const LogOut = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="text-white bg-black hover:bg-slate-800 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center "
       >
-        {localStorage.getItem("usename")}
+        {localStorage.getItem("username")}
         <svg
           className="w-2.5 h-2.5 ms-3"
           aria-hidden="true"
@@ -47,22 +47,32 @@ export const LogOut = () => {
             aria-labelledby="dropdownDefaultButton"
           >
             <li>
-              <a
-                href="/dashboard"
+                <Link to={'/dashboard'} >
+              <p
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Dashboard
-              </a>
+              </p>
+              </Link>
             </li>
+            <Link to={'/drafts'} >
             <li>
-              <a
-                href="#"
+              <p
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
-                Settings
-              </a>
+                Drafts
+              </p>
             </li>
-
+            </Link>
+            <Link to={'/fav'} >
+            <li>
+              <p
+                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                Favouirite Blogs
+              </p>
+            </li>
+            </Link>
             <li>
               <button
                 onClick={handleLogout}

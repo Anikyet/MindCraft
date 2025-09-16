@@ -2,13 +2,15 @@
 import { ArrowRight } from "lucide-react";
 import heroIllustration from "../assets/hero-illustration.png";
 import imgage from "../assets/hero.png"
+import { Link, useNavigate } from "react-router-dom";
 export const Hero = () => {
+  const nevigate = useNavigate();
   return (
     <>
       <div className="max-w-screen-2xl  py-28 bg-slate-50 ">
         <div className="flex relative justify-center gap-4">
           <div className="flex justify-end flex-col ">
-            <div className="absolute -top-24 left-28  w-full h-full">
+            <div className=" hidden md:block absolute -top-24 left-28  w-full h-full">
                 <img className=" h-60 transform hover:scale-105 transition-transform duration-500" src={imgage}/>
             </div>
             <div className="space-y-6 flex flex-col justify-end w-full">
@@ -22,7 +24,7 @@ export const Hero = () => {
               </p>
             </div>
             <div className="flex  sm:flex-row gap-4">
-              <button className=" flex justify-center items-center bg-black hover:bg-brand-slate-dark text-white px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <button onClick={()=> nevigate('/signup')} className=" flex justify-center items-center bg-black hover:bg-brand-slate-dark text-white px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 Start Writing - It's Free!
                 <ArrowRight className="ml-2" size={20} />
               </button>
@@ -55,10 +57,12 @@ export const Hero = () => {
           <span>✓ Unlimited posts</span>
         </div>
         <div className="flex  sm:flex-row gap-4">
+          <Link to={'/post'} >
           <button className=" flex justify-center items-center bg-black hover:bg-brand-slate-dark text-white px-4 py-2 mt-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
             Start Reading....
             <ArrowRight className="ml-2" size={20} />
           </button>
+          </Link>
           <div></div>
         </div>
       </div>

@@ -1,8 +1,8 @@
-import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+
+import { Hono } from "hono";
 import {sign} from "hono/jwt";
-// import { PrismaClient } from "../../src/generated/prisma/client.js";
 import { signinInput,signupInput } from "@anikyet/mindcraft_common";
 
 export const userRouter = new Hono<{
@@ -41,7 +41,7 @@ userRouter.post("/signup", async (c) => {
         },
       });
       const token = await sign({id:user.id,name:user.name},c.env.JWT_SECRET);
-      return c.json({token});
+      return c.json({token,username:user.name});
     } else {
       return c.json({
         msg: "User Exist",
@@ -50,43 +50,57 @@ userRouter.post("/signup", async (c) => {
   } catch (e) {
      c.status(403);
      return c.json({
-      error:"Error while signing up."
+      error:e
      });
   }
 });
 
 
-userRouter.post("/signin",async (c) => {
-    const prisma = new PrismaClient({
+userRouter.post("/signin", async (c) => {
+  const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+  }).$extends(withAccelerate());
 
-    const body = await c.req.json();
-    const {success} = signinInput.safeParse(body);
-    if(!success) {
-        c.status(411);
-        return c.json({
-            message:"Inputs are not correct."
-        })
+  try {
+    // 1. Validate input
+    const parsed = signinInput.safeParse(await c.req.json());
+    if (!parsed.success) {
+      c.status(411);
+      return c.json({ message: "Inputs are not correct." });
     }
-    try{
-      const user = await prisma.user.findUnique({
-        where:{
-          email:body.email,
-        }
-      });
 
-      if(!user || body.password !== user.password){
-        return c.json({ error: "Invalid credentials/user does not exist." })
-      }
+    const { email, password } = parsed.data;
 
-      const token = await sign({id:user.id,name:user.name},c.env.JWT_SECRET);
+    // 2. Find user
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
 
-      return c.json({token})
-    } catch(e){
-          c.status(403);
-     return c.json({
-      error:"Error while login"
-     }); 
+    if (!user) {
+      c.status(401);
+      return c.json({ error: "User does not exist." });
     }
+
+    // 3. Compare password
+    if (password !== user.password) {
+      // If using bcrypt: await bcrypt.compare(password, user.password)
+      c.status(401);
+      return c.json({ error: "Invalid password." });
+    }
+
+    // 4. Create JWT
+    if (!c.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not set in environment");
+    }
+
+    const token = await sign(
+      { id: user.id, name: user.name },
+      c.env.JWT_SECRET
+    );
+
+    return c.json({ token, username: user.name });
+  } catch (e) {
+    c.status(403);
+    return c.json({ error: "Error while login" });
+  }
 });

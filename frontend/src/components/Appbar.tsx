@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { Avatar } from "./BlogCard";
 import { useRecoilState } from "recoil";
 import { authAtom } from "../AtomStore/LoginAuth";
-import { LogOut } from "./LogOut";
+import { AppbarMenu } from "./AppbarMenu";
 
 export const Appbar = () => {
   const [auth] = useRecoilState(authAtom);
@@ -27,10 +26,8 @@ console.log(auth.isLoggedIn)
 
         
         {auth.isLoggedIn ? (
-          <LogOut />
-        ) : (
-          <Avatar name="" size={5} />
-        )}
+          <AppbarMenu />
+        ) : ""}
       </div>
     </div>
   );

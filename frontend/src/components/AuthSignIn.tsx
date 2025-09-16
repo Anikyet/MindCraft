@@ -3,7 +3,7 @@ import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-import { useSetRecoilState} from "recoil";
+import { useSetRecoilState } from "recoil";
 import { authAtom } from "../AtomStore/LoginAuth";
 
 export const AuthSignIn = () => {
@@ -13,22 +13,27 @@ export const AuthSignIn = () => {
   });
   const navigate = useNavigate();
   const setAuth = useSetRecoilState(authAtom);
-
+  const [loading, setLoading] = useState(false);
   async function sendRequest() {
     try {
+      setLoading(true);
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/user/signin`,
         postInput
       );
       const jwt = "Bearer " + response.data.token;
       localStorage.setItem("token", jwt);
+      localStorage.setItem("username", response.data.username);
       setAuth({
         isLoggedIn: true,
         token: jwt,
       });
-      navigate("/blogs");
-    } catch (e) {
-      console.log(e);
+      navigate("/post");
+    } catch (e: any) {
+  console.error(e);
+  alert(e.response?.data?.error || "Signin failed, try again.");
+} finally {
+      setLoading(false);
     }
   }
 
@@ -64,7 +69,7 @@ export const AuthSignIn = () => {
           <LablelledInput
             type="password"
             label="Password"
-            placeholder="Pleas create a password"
+            placeholder="Pleas enter password"
             onChange={(e) => {
               setPostInputs((c) => ({
                 ...c,
@@ -75,9 +80,10 @@ export const AuthSignIn = () => {
           <button
             onClick={sendRequest}
             type="button"
+            disabled={loading}
             className="text-white w-52  bg-[#050708] hover:bg-[#050708]/90 focus:ring-2 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center  dark:focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 me-2 mt-4"
           >
-            Signin
+            {loading ? "Signin in...." : "Signin"}
           </button>
         </div>
       </div>

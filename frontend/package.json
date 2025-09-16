@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anikyet/mindcraft_common": "^1.0.7",
+    "@anikyet/mindcraft_common": "^1.0.10",
+    "@material-tailwind/react": "^2.1.10",
     "axios": "^1.12.2",
     "easymde": "^2.20.0",
     "lucide-react": "^0.544.0",

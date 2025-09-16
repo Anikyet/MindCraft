@@ -11,15 +11,20 @@ export const AuthSignUp = () => {
     password: "",
   });
   const navigate = useNavigate();
-
+  const [loading , setLoading] = useState(false);
   async function sendRequest() {
+      
     try {
+      setLoading(true);
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/signup`,postInput);
       const jwt = "Bearer " + response.data.token;
       localStorage.setItem("token", jwt);
-      navigate("/blogs");
+      localStorage.setItem("username",response.data.username)
+      navigate("/post");
     } catch (e) {
       console.log(e);
+    } finally{
+      setLoading(false);
     }
   }
 
@@ -77,9 +82,10 @@ export const AuthSignUp = () => {
           <button 
           onClick={sendRequest}
             type="button"
+            disabled={loading}
             className="text-white w-52  bg-[#050708] hover:bg-[#050708]/90 focus:ring-2 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center  dark:focus:ring-[#050708]/50 dark:hover:bg-[#050708]/30 me-2 mt-4"
           >
-            Signup
+               {loading ? "Creating Account...." : "Signup"}
           </button>
         </div>
       </div>

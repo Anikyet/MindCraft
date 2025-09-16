@@ -1,4 +1,4 @@
-import type { Blog } from "../hooks";
+
 import { Avatar } from "./BlogCard";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,32 +11,28 @@ import { Link } from "react-router-dom";
 import { DeleteBlogBtn } from "./DeleteBlogBtn";
 import { MarkFavBtn } from "./MarkFavBtn";
 
-export const CompleteBlog = ({ blog }: { blog: Blog }) => {
+export const FavBlogList = ({ blog }: { blog: any }) => {
   const auth = useRecoilValue(authAtom);
-  const formattedDate = new Date(blog.createdAt).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-12 px-10 p-10 mx-40 gap-10">
         <div className="col-span-9">
           <div className=" flex ">
             <div className=" left-0 ">
-              {localStorage.getItem("username") === blog.author.name ? (
-                <DeleteBlogBtn blogId={blog.id}></DeleteBlogBtn>
+              {localStorage.getItem("username") === blog.post.name ? (
+                <DeleteBlogBtn blogId={blog.post.id}></DeleteBlogBtn>
               ) : (
                 ""
               )}
             </div>
             <div className=" right-0 ">
-              <MarkFavBtn blogId={blog.id} />
+              <MarkFavBtn blogId={blog.post.id} />
             </div>
           </div>
           {/* Blog Title */}
-          <div className="text-3xl font-extrabold">{blog.title}</div>
-          <div className="text-slate-500 pt-2">Posted on {formattedDate}</div>
+          <div className="text-3xl font-extrabold">{blog.post.title}</div>
+          <div className="text-slate-500 pt-2">Posted on 14 March 2025</div>
 
           {/* Blog Content */}
           <div className="prose prose-lg mt-4">
@@ -91,7 +87,7 @@ export const CompleteBlog = ({ blog }: { blog: Blog }) => {
                 ),
               }}
             >
-              {blog.content}
+              {blog.post.content}
             </ReactMarkdown>
           </div>
           {!auth.isLoggedIn ? (
@@ -106,11 +102,11 @@ export const CompleteBlog = ({ blog }: { blog: Blog }) => {
           )}
           <div className="">
             {" "}
-            {auth.isLoggedIn ? <Comment id={blog.id || " "} /> : ""}
+            {auth.isLoggedIn ? <Comment id={blog.post.id || " "} /> : ""}
           </div>
           <div className="">
             {" "}
-            {auth.isLoggedIn ? <ListComment id={blog.id || " "} /> : ""}
+            {auth.isLoggedIn ? <ListComment id={blog.post.id || " "} /> : ""}
           </div>
         </div>
 
@@ -119,10 +115,10 @@ export const CompleteBlog = ({ blog }: { blog: Blog }) => {
           <div className="text-xl font-bold mb-4">Author</div>
           <div className="flex gap-5 items-start">
             <div>
-              <Avatar name={blog.author.name} size={7} />
+              <Avatar name={blog.post.author.name} size={7} />
             </div>
             <div>
-              <div className="text-2xl font-bold">{blog.author.name}</div>
+              <div className="text-2xl font-bold">{blog.post.author.name}</div>
               <div className="pt-2 text-slate-500">
                 Random catchy phrase about the author's bio
               </div>

@@ -2,6 +2,9 @@
 import { BlogCard } from "../components/BlogCard";
 import { BlogSkeleton } from "../components/BlogSkeleton";
 import { useBlogs } from "../hooks";
+// import  blogright  from "../assets/blogright.png"
+// import blogleft from "../assets/blogleft.png"
+import image from "../assets/image.png"
 
 export const Blogs = () => {
   const { blogs, loading} = useBlogs();
@@ -14,8 +17,12 @@ export const Blogs = () => {
               </div>
   }
   return (
-    <div className="flex justify-center">
-    <div className="  max-w-2xl ">
+    <div className="grid grid-cols-6 relative">
+    <div className="flex justify-center relative col-span-5 ">
+      {/* <div className="absolute left-12 top-20 w-96 ">
+        <img className="" src={image} />
+      </div> */}
+    <div className="  max-w-3xl ">
 
       {blogs.map(blog =>(
               <BlogCard
@@ -24,11 +31,17 @@ export const Blogs = () => {
         authorName={blog.author.name}
         title={blog.title}
         content={blog.content}
-        publishedDate="14th March 1999"
+        createdAt={blog.createdAt } 
       />
       ) )}
 
     </div>
+
+    </div>
+              <div className="absolute right-0 top-10  ">
+        {/* <img src={blogright} /> */}
+                <img className="w-96" src={image} />
+      </div>
     </div>
   );
 };
