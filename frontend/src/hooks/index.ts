@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { BACKEND_URL } from "../config";
+import type { CommentType } from "../components/ListComments";
 
 type Blogs = {
   id: string;
@@ -20,8 +21,10 @@ export type Blog = {
   published?: boolean,
   createdAt?: any,
   author: {
+    id?:string
     name: string
   }
+  comments?: CommentType[];
 }
 
 export type PublishedBlogs = {

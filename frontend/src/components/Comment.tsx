@@ -2,29 +2,38 @@ import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { useRef, useState } from "react";
 
-export const Comment = ({ id }: { id: String }) => {
+export const Comment = ({ id }: { id: String },
+  
+) => {
   const commentData = useRef<HTMLInputElement | any>(null);
   const [loading, setLoading] = useState(false);
-  async function submitComment() {
-    setLoading(true);
-    try {
-      const dataObj = {
-        id: id,
-        comment: commentData.current?.value || "",
-      };
-      const token = localStorage.getItem("token");
-      await axios.post(`${BACKEND_URL}/api/v1/post/blog/comment`, dataObj, {
-        headers: { Authorization: `${token}` },
-      });
 
-      alert("comment created successfully!");
-      if (commentData.current) commentData.current.value = "";
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
+  async function submitComment() {
+  setLoading(true);
+  try {
+    const dataObj = {
+      id,
+      comment: commentData.current?.value || "",
+    };
+    const token = localStorage.getItem("token");
+    const res = await axios.post(
+      `${BACKEND_URL}/api/v1/post/blog/comment`,
+      dataObj,
+      { headers: { Authorization: `${token}` } }
+    );
+
+    console.log("Response: from the backend", res.data);
+
+
+
+    alert("comment created successfully!");
+    if (commentData.current) commentData.current.value = "";
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <>

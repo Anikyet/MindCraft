@@ -41,7 +41,7 @@ userRouter.post("/signup", async (c) => {
         },
       });
       const token = await sign({id:user.id,name:user.name},c.env.JWT_SECRET);
-      return c.json({token,username:user.name});
+      return c.json({token,username:user.name, userId: user.id });
     } else {
       return c.json({
         msg: "User Exist",
@@ -90,7 +90,7 @@ userRouter.post("/signin", async (c) => {
       c.env.JWT_SECRET
     );
 
-    return c.json({ token, username: user.name });
+    return c.json({ token, username: user.name, userId: user.id });
   } catch (e) {
     c.status(403);
     return c.json({ error: "Error while login" });

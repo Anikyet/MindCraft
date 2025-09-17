@@ -22,7 +22,7 @@ export const Blog = () => {
   }
   console.log(blogLoadable);
   return (<>
-    <BackBtn></BackBtn>
+    <BackBtn/>
     <div className="flex flex-col justify-center items-center w-full">
       <div>
         <CompleteBlog blog={blogLoadable.contents!} />

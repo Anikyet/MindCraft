@@ -390,10 +390,12 @@ blogRouter.get('/blog/comments/:id', async (c) => {
             where: { postId },
             include: {
                 author: {
-                    select: { name: true }, // only send author name
+                    select: { name: true,
+                        id:true
+                     }, 
                 },
             },
-            orderBy: { createdAt: "desc" }, // latest first
+            orderBy: { createdAt: "desc" }, 
         });
 
         return c.json({
@@ -401,6 +403,7 @@ blogRouter.get('/blog/comments/:id', async (c) => {
                 id: cmt.id,
                 content: cmt.content,
                 author: cmt.author.name,
+                authorId: cmt.author.id, 
                 createdAt: cmt.createdAt,
             })),
         });
@@ -411,34 +414,52 @@ blogRouter.get('/blog/comments/:id', async (c) => {
         );
     }
 });
-blogRouter.delete('/blog/comments/:id', async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+blogRouter.delete("/blog/comments/:id", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
 
-    try {
-        const commentId = c.req.param("id"); // get the comment ID from URL
-
-        if (!commentId) {
-            return c.json({ message: "Comment ID is required" }, 400);
-        }
-
-        // Delete the comment
-        await prisma.comment.delete({
-            where: { id: commentId },
-        });
-
-        return c.json({ message: "Comment deleted successfully" });
-    } catch (err: any) {
-        return c.json(
-            { message: "Failed to delete comment", error: err.message },
-            500
-        );
-    } finally {
-        await prisma.$disconnect();
+  try {
+    const authHeader = c.req.header("Authorization") || "";
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return c.json({ message: "Unauthorized" }, 401);
     }
-});
 
+    const decoded: any = await verify(token, c.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const commentId = c.req.param("id");
+    if (!commentId) {
+      return c.json({ message: "Comment ID is required" }, 400);
+    }
+
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+      select: { authorId: true },
+    });
+
+    if (!comment) {
+      return c.json({ message: "Comment not found" }, 404);
+    }
+
+    if (comment.authorId !== userId) {
+      return c.json({ message: "You are not allowed to delete this comment" }, 403);
+    }
+    await prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    return c.json({ message: "Comment deleted successfully" });
+  } catch (err: any) {
+    return c.json(
+      { message: "Failed to delete comment", error: err.message },
+      500
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+});
 blogRouter.get('/blog/fav', async (c) => {
     const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
     try {
@@ -540,8 +561,23 @@ blogRouter.get("/:id", async (c) => {
             createdAt: true,
             author: {
                 select: {
-                    name: true
+                    name: true,
+                    id:true,
                 }
+            },
+            comments:{
+                orderBy:{createdAt:"desc"},
+                    select:{
+                        id:true,
+                        content:true,
+                        createdAt:true,
+                        author:{
+                            select:{
+                                id:true,
+                                name:true
+                            }
+                        }
+                    }
             }
         }
     });

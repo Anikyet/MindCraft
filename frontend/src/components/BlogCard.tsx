@@ -6,6 +6,7 @@ interface BlogCArdProps {
   title: string;
   content: string;
   createdAt: any;
+  comments:[]
 }
 
 export const BlogCard = ({

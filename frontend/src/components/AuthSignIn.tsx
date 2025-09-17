@@ -24,6 +24,7 @@ export const AuthSignIn = () => {
       const jwt = "Bearer " + response.data.token;
       localStorage.setItem("token", jwt);
       localStorage.setItem("username", response.data.username);
+      localStorage.setItem("userId",response.data.userId);
       setAuth({
         isLoggedIn: true,
         token: jwt,

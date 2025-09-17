@@ -1,4 +1,4 @@
-import { atomFamily, selectorFamily } from "recoil";
+import {  atomFamily, selectorFamily } from "recoil";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
 import type { Blog } from "../hooks";
@@ -15,7 +15,7 @@ export const blogAtomFamily = atomFamily<Blog | null, string>({
           "Content-Type": "application/json",
         },
       });
-      return response.data as Blog;
+      return response.data ;
     },
   })
 })

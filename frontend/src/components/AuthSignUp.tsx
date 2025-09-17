@@ -19,7 +19,9 @@ export const AuthSignUp = () => {
       const response = await axios.post(`${BACKEND_URL}/api/v1/user/signup`,postInput);
       const jwt = "Bearer " + response.data.token;
       localStorage.setItem("token", jwt);
-      localStorage.setItem("username",response.data.username)
+      localStorage.setItem("username",response.data.username);
+      localStorage.setItem("userId",response.data.userId);
+
       navigate("/post");
     } catch (e) {
       console.log(e);

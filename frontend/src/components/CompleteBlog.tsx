@@ -13,6 +13,7 @@ import { MarkFavBtn } from "./MarkFavBtn";
 
 export const CompleteBlog = ({ blog }: { blog: Blog }) => {
   const auth = useRecoilValue(authAtom);
+
   const formattedDate = new Date(blog.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -34,11 +35,9 @@ export const CompleteBlog = ({ blog }: { blog: Blog }) => {
               <MarkFavBtn blogId={blog.id} />
             </div>
           </div>
-          {/* Blog Title */}
           <div className="text-3xl font-extrabold">{blog.title}</div>
           <div className="text-slate-500 pt-2">Posted on {formattedDate}</div>
 
-          {/* Blog Content */}
           <div className="prose prose-lg mt-4">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -105,16 +104,13 @@ export const CompleteBlog = ({ blog }: { blog: Blog }) => {
             " "
           )}
           <div className="">
-            {" "}
             {auth.isLoggedIn ? <Comment id={blog.id || " "} /> : ""}
           </div>
           <div className="">
-            {" "}
             {auth.isLoggedIn ? <ListComment id={blog.id || " "} /> : ""}
           </div>
         </div>
 
-        {/* Author Section */}
         <div className="col-span-3">
           <div className="text-xl font-bold mb-4">Author</div>
           <div className="flex gap-5 items-start">
