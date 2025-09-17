@@ -1,6 +1,7 @@
 import { useBlogs } from "../hooks";
 import { CompleteBlog } from "../components/CompleteBlog";
 import { Skeleton } from "../components/Skeleton";
+import { BackBtn } from "../components/BackBtn";
 
 export const PublishedBlogs = () => {
   const { loading, blogs } = useBlogs();
@@ -15,13 +16,18 @@ export const PublishedBlogs = () => {
 
   if (!blogs || blogs.length === 0) {
     return (
+      <>
+      <BackBtn />
       <div className="flex justify-center items-center h-screen text-xl font-bold">
         No published blogs found.
       </div>
+      </>
     );
   }
 
   return (
+    <>
+    <BackBtn />
     <div className="flex flex-col gap-10 px-10 py-10">
       {blogs.map((blog) => (
         <div key={blog.id} className="border rounded-xl shadow-md p-5">
@@ -29,5 +35,6 @@ export const PublishedBlogs = () => {
         </div>
       ))}
     </div>
+    </>
   );
 };

@@ -3,6 +3,7 @@
 import {useDraftBlogs } from "../hooks";
 import { DraftBlog } from "../components/DraftBlog";
 import { Skeleton } from "../components/Skeleton";
+import { BackBtn } from "../components/BackBtn";
 
 const Drafts = () => {
   const { loading, draftBlogs } = useDraftBlogs();
@@ -17,13 +18,18 @@ const Drafts = () => {
 
   if (!draftBlogs || draftBlogs.length === 0) {
     return (
+      <>
+      <BackBtn />
       <div className="flex justify-center items-center h-screen text-xl font-bold">
         No Draft blogs found.
       </div>
+      </>
     );
   }
 
   return (
+    <>
+    <BackBtn />
     <div className="flex flex-col gap-10 px-10 py-10">
        <p className=" italic font-bold text-md  text-slate-600"> Hey here are your blogs in draft waiting to be read by people. </p>
       {draftBlogs.map((blog) => (
@@ -32,6 +38,7 @@ const Drafts = () => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 export  default Drafts;
