@@ -8,12 +8,12 @@ export const Landing = () => {
   return (
     <>
       <div className="max-w-screen-2xl  py-28 bg-slate-50 ">
-        <div className="  lg:flex relative justify-center gap-4">
-          <div className="grid grid-cols-2  lg:flex justify-end lg:flex-col ">
+        <div className=" flex flex-col lg:flex-row relative justify-center gap-4">
+          <div className=" col-span-1 lg:flex justify-end lg:flex-col ">
             <div className=" hidden md:block absolute -top-24 left-28  w-full h-full">
                 <img className=" hidden  xl:block h-60 transform hover:scale-105 transition-transform duration-500" src={imgage}/>
             </div>
-            <div className="space-y-6 flex flex-col justify-end w-full">
+            <div className="space-y-6 mx-1 flex flex-col justify-end w-full">
               <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                 Craft Your Mind Into Words
               </h1>
@@ -23,7 +23,7 @@ export const Landing = () => {
                 connect with readers worldwide - no limits, no fees.
               </p>
             </div>
-            <div className=" py-0 lg:flex  sm:flex-row gap-4">
+            <div className=" py-0 lg:flex flex justify-center lg:justify-start  sm:flex-row gap-4">
               <button onClick={()=> nevigate('/signup')} className=" flex justify-center items-center bg-black hover:bg-brand-slate-dark text-white px-8 py-4 text-lg font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 Start Writing - It's Free!
                 <ArrowRight className="ml-2" size={20} />
@@ -31,7 +31,7 @@ export const Landing = () => {
               <div></div>
             </div>
           </div>
-          <div className=" transform hover:scale-105 transition-transform duration-500">
+          <div className=" text-center m-10 lg:m-0 col-span-1 transform hover:scale-105 transition-transform duration-500">
             <img
               src={heroIllustration}
               alt="MindCraft blogging platform illustration"
