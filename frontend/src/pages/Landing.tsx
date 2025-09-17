@@ -9,7 +9,7 @@ export const Landing = () => {
     <>
       <div className="max-w-screen-2xl  py-28 bg-slate-50 ">
         <div className="  lg:flex relative justify-center gap-4">
-          <div className="grid grid-cols-2  lg:flex justify-end flex-col ">
+          <div className="grid grid-cols-2  lg:flex justify-end lg:flex-col ">
             <div className=" hidden md:block absolute -top-24 left-28  w-full h-full">
                 <img className=" hidden  xl:block h-60 transform hover:scale-105 transition-transform duration-500" src={imgage}/>
             </div>
