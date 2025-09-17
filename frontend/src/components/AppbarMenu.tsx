@@ -18,7 +18,7 @@ export const AppbarMenu = () => {
     <div  className="relative inline-block text-left">
       {/* Dropdown Button */}
       <button
-        onMouseEnter={() => setIsOpen(isOpen=> isOpen=true)}
+        onMouseEnter={() => setIsOpen(true)}
         className="text-white bg-black hover:bg-slate-800 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center "
       >
         {localStorage.getItem("username")}
@@ -42,8 +42,7 @@ export const AppbarMenu = () => {
       {/* Dropdown Menu */}
       {isOpen && (
         <div
-        
-        onMouseLeave={() => setIsOpen(isOpen=> isOpen=false)}
+        onMouseLeave={() => setIsOpen(false)}
         className="absolute right-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
           <ul
             className="py-2 text-sm text-gray-700 dark:text-gray-200"
