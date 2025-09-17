@@ -3,6 +3,7 @@
 import {useDraftBlogs } from "../hooks";
 // import { CompleteBlog } from "../components/CompleteBlog";
 import { DraftBlog } from "../components/DraftBlog";
+import { Skeleton } from "../components/Skeleton";
 
 export const Drafts = () => {
   const { loading, draftBlogs } = useDraftBlogs();
@@ -10,7 +11,7 @@ export const Drafts = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen text-xl font-bold">
-        Loading blogs...
+        <Skeleton />
       </div>
     );
   }

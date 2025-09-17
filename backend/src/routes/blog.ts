@@ -108,7 +108,33 @@ blogRouter.put("/blog/update", async (c) => {
 
 });
 
+blogRouter.get('/blog/stats', async (c) =>{
+        const prisma = new PrismaClient({datasourceUrl: c.env.DATABASE_URL,}).$extends(withAccelerate());
 
+        const published =await prisma.post.count({
+            where:{
+            authorId: c.get("userId"),
+            published:true
+            }
+        });
+        const  drafts = await prisma.post.count({
+            where:{
+                authorId:c.get("userId"),
+                published:false,
+            }
+        });
+        const fav = await prisma.fav.count({
+            where:{
+                authorId:c.get("userId")
+            }
+        });
+
+        return c.json({
+            published,
+            drafts,
+            fav
+        }) 
+});
 
 // blogRouter.get("/bulk", async (c) => {
 //     const prisma = new PrismaClient({

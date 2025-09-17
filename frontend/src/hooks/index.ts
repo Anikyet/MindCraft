@@ -70,30 +70,30 @@ export const usePageinationedFetch = <T,>(
   return { blogs, totalPages, loading}
 };
 
-export const useBlog = ({ id }: { id: string }) => {
-  console.log("id on hooks" + id)
-  const [loading, setLoading] = useState(true);
-  const [blog, setBlog] = useState<Blog>();
+// export const useBlog = ({ id }: { id: string }) => {
+//   console.log("id on hooks" + id)
+//   const [loading, setLoading] = useState(true);
+//   const [blog, setBlog] = useState<Blog>();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios.get(`${BACKEND_URL}/api/v1/post/${id}`, {
-      headers: {
-        Authorization: `${token}`, // dynamically set token
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      console.log(response);
-      setBlog(response.data);
-      setLoading(false);
-    })
-  }, [id]);
+//   useEffect(() => {
+//     const token = localStorage.getItem("token");
+//     axios.get(`${BACKEND_URL}/api/v1/post/${id}`, {
+//       headers: {
+//         Authorization: `${token}`, // dynamically set token
+//         "Content-Type": "application/json",
+//       },
+//     }).then((response) => {
+//       console.log(response);
+//       setBlog(response.data);
+//       setLoading(false);
+//     })
+//   }, [id]);
 
-  return {
-    loading,
-    blog
-  }
-}
+//   return {
+//     loading,
+//     blog
+//   }
+// }
 
 export const useBlogs = () => {
   const [loading, setLoading] = useState(true);

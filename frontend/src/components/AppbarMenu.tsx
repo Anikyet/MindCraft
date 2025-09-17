@@ -15,10 +15,10 @@ export const AppbarMenu = () => {
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div  className="relative inline-block text-left">
       {/* Dropdown Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsOpen(isOpen=> isOpen=true)}
         className="text-white bg-black hover:bg-slate-800 focus:ring-2 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center "
       >
         {localStorage.getItem("username")}
@@ -41,7 +41,10 @@ export const AppbarMenu = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+        <div
+        
+        onMouseLeave={() => setIsOpen(isOpen=> isOpen=false)}
+        className="absolute right-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
           <ul
             className="py-2 text-sm text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownDefaultButton"
@@ -52,6 +55,15 @@ export const AppbarMenu = () => {
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Dashboard
+              </p>
+              </Link>
+            </li>
+                        <li>
+                <Link to={'/published'} >
+              <p
+                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                Published
               </p>
               </Link>
             </li>
@@ -69,7 +81,7 @@ export const AppbarMenu = () => {
               <p
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
-                Favouirite Blogs
+                Favourites
               </p>
             </li>
             </Link>

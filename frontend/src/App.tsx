@@ -12,6 +12,8 @@ import { Dashboard } from './pages/Dashboard'
 import { Drafts } from './pages/Drafts'
 import { FavBlogs } from './pages/FavBlogs'
 import { Landing } from './pages/Landing'
+import { Dash } from './pages/Dash'
+import { Published } from './pages/Published'
 
 function App() {
 
@@ -24,9 +26,11 @@ function App() {
           <Route path='/signin' element={<Signin/>} />
           <Route path='/post/:id' element={ <Blog/> } />
           <Route path='/post' element={<Blogs/>} />
-          <Route path='/dashboard' element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+          <Route path='/dash' element={<Dash />} />
+          <Route path='/dashboard' element={<ProtectedRoute><Dash/></ProtectedRoute>} />
           <Route path='/drafts' element={<ProtectedRoute><Drafts/></ProtectedRoute>} />
-          <Route path='/fav' element={<ProtectedRoute><FavBlogs/></ProtectedRoute>} /> 
+          <Route path='/fav' element={<ProtectedRoute><FavBlogs/></ProtectedRoute>} />
+          <Route path='/published' element={<ProtectedRoute><Published/></ProtectedRoute>} />          
           <Route path='/publish' element={ <ProtectedRoute> <Publish/> </ProtectedRoute>} />
         </Routes>
       <Footer />

@@ -2,6 +2,7 @@
 
 import {useFavBlogs} from "../hooks";
 import { FavBlogList } from "../components/FavBlogList";
+import { Skeleton } from "../components/Skeleton";
 
 export const FavBlogs = () => {
   const { loading, favBlogs } = useFavBlogs();
@@ -9,7 +10,7 @@ export const FavBlogs = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen text-xl font-bold">
-        Loading blogs...
+        <Skeleton />
       </div>
     );
   }

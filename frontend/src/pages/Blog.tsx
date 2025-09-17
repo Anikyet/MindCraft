@@ -1,29 +1,33 @@
+import { useRecoilValueLoadable } from "recoil";
 import { CompleteBlog } from "../components/CompleteBlog";
 import { Skeleton } from "../components/Skeleton";
-import { useBlog } from "../hooks";
 import { useParams } from "react-router-dom";
+import { blogAtomFamily } from "../AtomStore/BlogAtoms";
+import { BackBtn } from "../components/BackBtn";
 
 
 
 export const Blog = () => {
+  
   const { id } = useParams();
   console.log("id on blog.tsx" + id);
-  const { loading, blog } = useBlog({
-    id: id || "",
-  });
-  if (loading) {
+  const blogLoadable = useRecoilValueLoadable(blogAtomFamily(id ||""));
+
+  if (blogLoadable.state === "loading"){
     return (
       <div className="flex justify-center">
         <Skeleton />
       </div>
     );
   }
-  console.log(blog);
-  return (
+  console.log(blogLoadable);
+  return (<>
+    <BackBtn></BackBtn>
     <div className="flex flex-col justify-center items-center w-full">
       <div>
-        <CompleteBlog blog={blog!} />
+        <CompleteBlog blog={blogLoadable.contents!} />
       </div>
     </div>
+    </>
   );
 };

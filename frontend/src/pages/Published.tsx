@@ -1,24 +1,25 @@
-
-
 import {usePublishedBlogs } from "../hooks";
 import { CompleteBlog } from "../components/CompleteBlog";
+import { Skeleton } from "../components/Skeleton";
 
-export const Dashboard = () => {
+export const Published = () => {
   const { loading, publishedBlogs } = usePublishedBlogs();
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen text-xl font-bold">
-        Loading blogs...
+        <Skeleton/>
       </div>
     );
   }
 
   if (!publishedBlogs || publishedBlogs.length === 0) {
     return (
+      <>
       <div className="flex justify-center items-center h-screen text-xl font-bold">
         No published blogs found.
       </div>
+      </>
     );
   }
 
