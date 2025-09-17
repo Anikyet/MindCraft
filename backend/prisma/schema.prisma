@@ -30,6 +30,7 @@ model Post{
   content String
   published Boolean @default(false)
   authorId String
+  tags String @default("general")
   createdAt DateTime @default(now())
   author User @relation(fields: [authorId], references: [id])
   comments  Comment[]

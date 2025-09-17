@@ -35,6 +35,40 @@ export type PublishedBlogs = {
   }
 }
 
+export const usePageinationedFetch = <T,>(
+  endpoint: string,
+  page: number,
+  limit: number,
+) => {
+  const [blogs, setBlogs] = useState<T[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+
+      try {
+        const token = localStorage.getItem("token");
+        setLoading(true);
+        const res = await axios.get(`${BACKEND_URL}/${endpoint}`, {
+          params: { page, limit },
+          headers: {
+            Authorization: `${token}`, 
+            "Content-Type": "application/json",
+          }
+        });
+        setBlogs(res.data.blogs || []);
+        setTotalPages(res.data.totalPages);
+      } catch (e) {
+         console.error("Pagination fetch error:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [endpoint, page, limit]);
+  return { blogs, totalPages, loading}
+};
 
 export const useBlog = ({ id }: { id: string }) => {
   console.log("id on hooks" + id)
@@ -152,3 +186,5 @@ export const useFavBlogs = () => {
     favBlogs
   }
 }
+
+

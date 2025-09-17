@@ -7,11 +7,11 @@ import { Blogs } from './pages/Blogs'
 import { Appbar } from './components/Appbar'
 import { Publish } from './pages/Publish'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { Hero } from './components/Hero'
 import Footer from './components/Footer'
 import { Dashboard } from './pages/Dashboard'
 import { Drafts } from './pages/Drafts'
 import { FavBlogs } from './pages/FavBlogs'
+import { Landing } from './pages/Landing'
 
 function App() {
 
@@ -19,7 +19,7 @@ function App() {
     <>
     <Appbar/>
         <Routes>
-          <Route path='/' element={ <Hero />}/>
+          <Route path='/' element={ <Landing />}/>
           <Route path='/signup' element={<Signup/>} />
           <Route path='/signin' element={<Signin/>} />
           <Route path='/post/:id' element={ <Blog/> } />

@@ -16,6 +16,7 @@ export const signinInput = z.object({
 export const createBlogInput = z.object({
     title: z.string(),
     content: z.string(),
+    tags: z.string(),
     published: z.boolean().optional(),
 });
 
@@ -49,11 +50,13 @@ export type SigninInput = {
 export type CreateBlogInput = {
   title: string;
   content: string;
-  published?:boolean
+  published?:boolean;
+  tags?:string;
 };
 
 export type UpdateBlogInput = {
   id: string;         // the blog ID
   title: string;
   content: string;
+  tags?: string;
 };

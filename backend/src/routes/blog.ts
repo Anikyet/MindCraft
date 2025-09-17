@@ -110,45 +110,52 @@ blogRouter.put("/blog/update", async (c) => {
 
 
 
-blogRouter.get("/bulk", async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+// blogRouter.get("/bulk", async (c) => {
+//     const prisma = new PrismaClient({
+//         datasourceUrl: c.env.DATABASE_URL,
+//     }).$extends(withAccelerate());
 
-    const blogs = await prisma.post.findMany({
-        where:{
-            published:true
-        },
-        select:{
-            id:true,
-            title:true,
-            content:true,
-            createdAt:true,
-            author:{
-                select:{
-                    name:true
-                } 
-            }
-        }
-    });
-    if(blogs){
-    return c.json({
-        blogs: blogs
-    });
-    } else {
-        return c.json({
-            msg:"No Blog Found..."
-        })
-    }
-
-
-});
+//     const blogs = await prisma.post.findMany({
+//         where:{
+//             published:true
+//         },
+//         select:{
+//             id:true,
+//             title:true,
+//             content:true,
+//             createdAt:true,
+//             author:{
+//                 select:{
+//                     name:true
+//                 } 
+//             }
+//         }
+//     });
+//     if(blogs){
+//     return c.json({
+//         blogs: blogs
+//     });
+//     } else {
+//         return c.json({
+//             msg:"No Blog Found..."
+//         })
+//     }
+// });
 
 blogRouter.get('/bulk' ,async (c) =>{
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
-    const blogs = await prisma.post.findMany({
+
+    const page = parseInt(c.req.query("page") || "1",10);
+    const limit = parseInt(c.req.query("limit") || "10",10);
+    const skip  = (page-1) * limit;
+
+
+    const [blogs, total] = await Promise.all([ await prisma.post.findMany({
+        skip,
+        take:limit,
+        orderBy:{createdAt:"desc"},
         where:{
             published:true,
         },
@@ -164,11 +171,20 @@ blogRouter.get('/bulk' ,async (c) =>{
                 } 
             }
         }
-    });
+    }),prisma.post.count({
+        where:{
+            published:true
+        }
+    }), ]);
+
     if(blogs){
     return c.json({
-        blogs: blogs
+        blogs,
+        total,
+        page,
+        totalPages: Math.ceil(total/limit),
     });
+
     } else {
         return c.json({
             msg:"No Blog Found..."
