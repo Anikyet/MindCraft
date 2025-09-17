@@ -5,7 +5,7 @@ import {useDraftBlogs } from "../hooks";
 import { DraftBlog } from "../components/DraftBlog";
 import { Skeleton } from "../components/Skeleton";
 
-export const Drafts = () => {
+const Drafts = () => {
   const { loading, draftBlogs } = useDraftBlogs();
 
   if (loading) {
@@ -35,3 +35,4 @@ export const Drafts = () => {
     </div>
   );
 };
+export  default Drafts;

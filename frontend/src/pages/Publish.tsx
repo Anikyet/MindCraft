@@ -5,7 +5,7 @@ import "easymde/dist/easymde.min.css";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 
-export const Publish = () => {
+const Publish = () => {
   const titleRef = useRef<HTMLInputElement | null>(null);
   const contentRef = useRef<string>("");
   const simpleMdeRef = useRef<EasyMDE | null>(null);
@@ -130,3 +130,4 @@ export const Publish = () => {
     </div>
   );
 };
+export default Publish;

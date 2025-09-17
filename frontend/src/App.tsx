@@ -5,14 +5,15 @@ import { Signup } from './pages/Signup'
 import { Signin } from './pages/Signin'
 import { Blogs } from './pages/Blogs'
 import { Appbar } from './components/Appbar'
-import { Publish } from './pages/Publish'
+const Publish = lazy(() => import("./pages/Publish"));
 import { ProtectedRoute } from './components/ProtectedRoute'
 import Footer from './components/Footer'
-import { Drafts } from './pages/Drafts'
+const Drafts = lazy(() => import("./pages/Drafts"));
 import { FavBlogs } from './pages/FavBlogs'
 import { Landing } from './pages/Landing'
 import { Dash } from './pages/Dash'
 import { Published } from './pages/Published'
+import { lazy } from 'react'
 
 function App() {
 
