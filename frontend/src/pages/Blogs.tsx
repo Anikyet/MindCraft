@@ -2,8 +2,6 @@
 import { BlogCard } from "../components/BlogCard";
 import { BlogSkeleton } from "../components/BlogSkeleton";
 import { usePageinationedFetch } from "../hooks";
-// import  blogright  from "../assets/blogright.png"
-// import blogleft from "../assets/blogleft.png"
 import image from "../assets/image.png"
 import { useState } from "react";
 import { PaginationBtn } from "../components/PaginationBtn";

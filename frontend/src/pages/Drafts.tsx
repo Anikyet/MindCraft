@@ -1,7 +1,6 @@
 
 
 import {useDraftBlogs } from "../hooks";
-// import { CompleteBlog } from "../components/CompleteBlog";
 import { DraftBlog } from "../components/DraftBlog";
 import { Skeleton } from "../components/Skeleton";
 

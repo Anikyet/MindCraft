@@ -9,14 +9,12 @@ export const Signin = () =>{
   const auth = useRecoilValue(authAtom);
   const navigate = useNavigate();
 
-  // Redirect if logged in
   useEffect(() => {
     if (auth.isLoggedIn) {
       navigate("/dashboard");
     }
   }, [auth.isLoggedIn, navigate]);
 
-  // Render ternary style JSX — the logged-in branch can just return null
   return (
     <div className="">
       {!auth.isLoggedIn ? (

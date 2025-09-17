@@ -1,5 +1,3 @@
-
-
 import { useBlogs } from "../hooks";
 import { CompleteBlog } from "../components/CompleteBlog";
 import { Skeleton } from "../components/Skeleton";

@@ -1,4 +1,4 @@
-// Dashboard.tsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
@@ -28,7 +28,6 @@ export const Dash = () => {
     async function getUser() {
     const token = localStorage.getItem("token");
     
-    // Fetch user details
     await axios
       .get(`${BACKEND_URL}/api/v1/user/me`, {
         headers: { Authorization: `${token}` },
@@ -68,9 +67,9 @@ export const Dash = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto space-y-10">
-      {/* User Details Section */}
+   
       <div className="flex items-center space-x-6 bg-white p-6 rounded-lg shadow-md">
-        {/* Avatar */}
+   
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
           {user.avatarUrl ? (
             <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
@@ -81,7 +80,6 @@ export const Dash = () => {
           )}
         </div>
 
-        {/* User Info */}
         <div className="flex-1">
           {editing ? (
             <div className="mt-0">
@@ -101,7 +99,6 @@ export const Dash = () => {
           )}
         </div>
 
-        {/* Edit / Submit Button */}
         <div>
           {editing ? (
             <button
@@ -121,7 +118,6 @@ export const Dash = () => {
         </div>
       </div>
 
-      {/* Blog Stats Section */}
       <div className="grid grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
           <h3 className="text-2xl font-bold">{stats.published}</h3>
