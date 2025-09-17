@@ -2,20 +2,20 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify, decode } from "hono/jwt";
-import { createBlogInput,updateBlogInput } from "@anikyet/mindcraft_common";
+import { createBlogInput, updateBlogInput } from "@anikyet/mindcraft_common";
 export const blogRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string;
         JWT_SECRET: string;
     },
-    Variables:{
-        userId:string
+    Variables: {
+        userId: string
     }
 }>();
 
 // blogRouter.use('/blog/*', async (c, next) => {
 //     const authHeader = c.req.header("Authorization")|| "";
-    
+
 //     try{
 //         const token = authHeader.split(" ")[1];
 //         const response = await verify(token, c.env.JWT_SECRET);
@@ -59,11 +59,11 @@ blogRouter.post("/blog/create", async (c) => {
     }).$extends(withAccelerate());
 
     const body = await c.req.json();
-    const {success }  = createBlogInput.safeParse(body);
-    if(!success){
+    const { success } = createBlogInput.safeParse(body);
+    if (!success) {
         c.status(411);
         return c.json({
-            message:"Invalid input fields to create the blog."
+            message: "Invalid input fields to create the blog."
         })
     }
     const blog = await prisma.post.create({
@@ -85,11 +85,11 @@ blogRouter.put("/blog/update", async (c) => {
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
-    const {success} = updateBlogInput.safeParse(body);
-        if(!success){
+    const { success } = updateBlogInput.safeParse(body);
+    if (!success) {
         c.status(411);
         return c.json({
-            message:"Invalid input fields to update the blog."
+            message: "Invalid input fields to update the blog."
         })
     }
     const blog = await prisma.post.update({
@@ -108,32 +108,32 @@ blogRouter.put("/blog/update", async (c) => {
 
 });
 
-blogRouter.get('/blog/stats', async (c) =>{
-        const prisma = new PrismaClient({datasourceUrl: c.env.DATABASE_URL,}).$extends(withAccelerate());
+blogRouter.get('/blog/stats', async (c) => {
+    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL, }).$extends(withAccelerate());
 
-        const published =await prisma.post.count({
-            where:{
+    const published = await prisma.post.count({
+        where: {
             authorId: c.get("userId"),
-            published:true
-            }
-        });
-        const  drafts = await prisma.post.count({
-            where:{
-                authorId:c.get("userId"),
-                published:false,
-            }
-        });
-        const fav = await prisma.fav.count({
-            where:{
-                authorId:c.get("userId")
-            }
-        });
+            published: true
+        }
+    });
+    const drafts = await prisma.post.count({
+        where: {
+            authorId: c.get("userId"),
+            published: false,
+        }
+    });
+    const fav = await prisma.fav.count({
+        where: {
+            authorId: c.get("userId")
+        }
+    });
 
-        return c.json({
-            published,
-            drafts,
-            fav
-        }) 
+    return c.json({
+        published,
+        drafts,
+        fav
+    })
 });
 
 // blogRouter.get("/bulk", async (c) => {
@@ -168,121 +168,110 @@ blogRouter.get('/blog/stats', async (c) =>{
 //     }
 // });
 
-blogRouter.get('/bulk' ,async (c) =>{
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+// 
 
-    const page = parseInt(c.req.query("page") || "1",10);
-    const limit = parseInt(c.req.query("limit") || "10",10);
-    const skip  = (page-1) * limit;
+blogRouter.get("/bulk", async (c) => {
+    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL, }).$extends(withAccelerate());
 
+    try {
+        const page = parseInt(c.req.query("page") || "1", 10)
+        const limit = parseInt(c.req.query("limit") || "10", 10)
+        const skip = (page - 1) * limit
 
-    const [blogs, total] = await Promise.all([ await prisma.post.findMany({
-        skip,
-        take:limit,
-        orderBy:{createdAt:"desc"},
-        where:{
-            published:true,
-        },
-        select:{
-            id:true,
-            title:true,
-            content:true,
-            published:true,
-            createdAt:true,
-            author:{
-                select:{
-                    name:true
-                } 
-            }
-        }
-    }),prisma.post.count({
-        where:{
-            published:true
-        }
-    }), ]);
+        const [blogs, total] = await Promise.all([
+            prisma.post.findMany({
+                skip,
+                take: limit,
+                orderBy: { createdAt: "desc" },
+                where: { published: true },
+                select: {
+                    id: true,
+                    title: true,
+                    content: true,
+                    published: true,
+                    createdAt: true,
+                    author: { select: { name: true } }
+                }
+            }),
+            prisma.post.count({ where: { published: true } })
+        ])
 
-    if(blogs){
-    return c.json({
-        blogs,
-        total,
-        page,
-        totalPages: Math.ceil(total/limit),
-    });
-
-    } else {
         return c.json({
-            msg:"No Blog Found..."
+            blogs,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit)
         })
+    } catch (err: any) {
+        return c.json({ error: err.message }, 500)
     }
-
 })
 
-blogRouter.get('/blog/userPosts' ,async (c) =>{
+
+blogRouter.get('/blog/userPosts', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const blogs = await prisma.post.findMany({
-        where:{
-            published:true,
-            authorId:c.get("userId")
+        where: {
+            published: true,
+            authorId: c.get("userId")
         },
-        select:{
-            id:true,
-            title:true,
-            content:true,
-            published:true,
-            createdAt:true,
-            author:{
-                select:{
-                    name:true
-                } 
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            published: true,
+            createdAt: true,
+            author: {
+                select: {
+                    name: true
+                }
             }
         }
     });
-    if(blogs){
-    return c.json({
-        blogs: blogs
-    });
+    if (blogs) {
+        return c.json({
+            blogs: blogs
+        });
     } else {
         return c.json({
-            msg:"No Blog Found..."
+            msg: "No Blog Found..."
         })
     }
 
 })
 
 
-blogRouter.get('/blog/drafts' , async (c) =>{
+blogRouter.get('/blog/drafts', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const blogs = await prisma.post.findMany({
-        where:{
-            published:false,
-            authorId:c.get("userId")
+        where: {
+            published: false,
+            authorId: c.get("userId")
         },
-        select:{
-            id:true,
-            title:true,
-            content:true,
-            published:true,
-            createdAt:true,
-            author:{
-                select:{
-                    name:true
-                } 
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            published: true,
+            createdAt: true,
+            author: {
+                select: {
+                    name: true
+                }
             }
         }
     });
-    if(blogs){
-    return c.json({
-        blogs: blogs
-    });
+    if (blogs) {
+        return c.json({
+            blogs: blogs
+        });
     } else {
         return c.json({
-            msg:"No Blog Found..."
+            msg: "No Blog Found..."
         })
     }
 });
@@ -358,179 +347,179 @@ blogRouter.delete("/blog/:id", async (c) => {
 });
 
 blogRouter.post('/blog/comment', async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const body = await c.req.json<{ id: string; comment: string }>();
-    const authorId = c.get("userId"); // we set this in middleware after verifying JWT
-
-    if (!body.id || !body.comment) {
-      return c.json({ message: "Post ID and comment are required" }, 400);
-    }
-
-    // Create comment
-    const newComment = await prisma.comment.create({
-      data: {
-        content: body.comment,
-        postId: body.id,
-        authorId: authorId,
-      },
-      include: {
-        author: { select: { id: true, name: true } },
-        post:   { select: { id: true, title: true } },
-      },
-    });
-
-    return c.json({ message: "Comment added successfully", comment: newComment });
-  } catch (err: any) {
-    return c.json({ message: "Failed to create comment", error: err.message }, 500);
-  }
-});
-
-blogRouter.get('/blog/comments/:id', async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const postId = c.req.param("id");
-
-    const comments = await prisma.comment.findMany({
-      where: { postId },
-      include: {
-        author: {
-          select: { name: true }, // only send author name
-        },
-      },
-      orderBy: { createdAt: "desc" }, // latest first
-    });
-
-    return c.json({
-      comments: comments.map((cmt) => ({
-        id: cmt.id,
-        content: cmt.content,
-        author: cmt.author.name,
-        createdAt: cmt.createdAt,
-      })),
-    });
-  } catch (err: any) {
-    return c.json(
-      { message: "Failed to fetch comments", error: err.message },
-      500
-    );
-  }
-});
-blogRouter.delete('/blog/comments/:id', async (c) => {
-  const prisma = new PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate());
-
-  try {
-    const commentId = c.req.param("id"); // get the comment ID from URL
-
-    if (!commentId) {
-      return c.json({ message: "Comment ID is required" }, 400);
-    }
-
-    // Delete the comment
-    await prisma.comment.delete({
-      where: { id: commentId },
-    });
-
-    return c.json({ message: "Comment deleted successfully" });
-  } catch (err: any) {
-    return c.json(
-      { message: "Failed to delete comment", error: err.message },
-      500
-    );
-  } finally {
-    await prisma.$disconnect();
-  }
-});
-
-blogRouter.get('/blog/fav', async (c) =>{
-      const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
-  try {
-    const authorId = c.get("userId");
-
-    const blogs = await prisma.fav.findMany({
-      where: { authorId },
-select: {
-        post: {
-          select: {
-            id: true,
-            title: true,
-            content: true,
-            published:true,
-            createdAt:true,
-            author: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-
-    return c.json({ blogs });
-  } catch (err: any) {
-    return c.json({ message: "Failed to fetch favorite status", error: err.message }, 500);
-  } 
-})
-
-blogRouter.get("/blog/isFav/:id", async (c) => {
-  const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
-  try {
-    const postId = c.req.param("id");
-    const authorId = c.get("userId");
-
-    const fav = await prisma.fav.findUnique({
-      where: { authorId_postId:  {authorId, postId: postId } },
-    });
-
-    return c.json({ isFav: !!fav });
-  } catch (err: any) {
-    return c.json({ message: "Failed to fetch favorite status", error: err.message }, 500);
-  } 
-});
-
-
-blogRouter.post('/blog/markFav' , async (c) =>{
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
-     
+
     try {
-    const body = await c.req.json();
-    const authorId = c.get("userId");
+        const body = await c.req.json<{ id: string; comment: string }>();
+        const authorId = c.get("userId"); // we set this in middleware after verifying JWT
 
-    if (!body.id) return c.json({ message: "Blog ID is required" }, 411);
+        if (!body.id || !body.comment) {
+            return c.json({ message: "Post ID and comment are required" }, 400);
+        }
 
-    // Check if favorite already exists
-    const existingFav = await prisma.fav.findUnique({
-      where: { authorId_postId:  {authorId, postId: body.id }  },
-    });
+        // Create comment
+        const newComment = await prisma.comment.create({
+            data: {
+                content: body.comment,
+                postId: body.id,
+                authorId: authorId,
+            },
+            include: {
+                author: { select: { id: true, name: true } },
+                post: { select: { id: true, title: true } },
+            },
+        });
 
-    if (existingFav) {
-      // Exists → remove it
-      await prisma.fav.delete({
-        where: { authorId_postId:  {authorId, postId: body.id } },
-      });
-      return c.json({ message: "Blog unfavorited", isFav: false });
-    } else {
-      // Doesn’t exist → create it
-      await prisma.fav.create({
-        data: { authorId, postId: body.id },
-      });
-      return c.json({ message: "Blog marked as favorite", isFav: true });
+        return c.json({ message: "Comment added successfully", comment: newComment });
+    } catch (err: any) {
+        return c.json({ message: "Failed to create comment", error: err.message }, 500);
     }
-    }  catch (err: any) {
-    return c.json({ message: "Failed to toggle favorite", error: err.message }, 500);
-  } 
+});
+
+blogRouter.get('/blog/comments/:id', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    try {
+        const postId = c.req.param("id");
+
+        const comments = await prisma.comment.findMany({
+            where: { postId },
+            include: {
+                author: {
+                    select: { name: true }, // only send author name
+                },
+            },
+            orderBy: { createdAt: "desc" }, // latest first
+        });
+
+        return c.json({
+            comments: comments.map((cmt) => ({
+                id: cmt.id,
+                content: cmt.content,
+                author: cmt.author.name,
+                createdAt: cmt.createdAt,
+            })),
+        });
+    } catch (err: any) {
+        return c.json(
+            { message: "Failed to fetch comments", error: err.message },
+            500
+        );
+    }
+});
+blogRouter.delete('/blog/comments/:id', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    try {
+        const commentId = c.req.param("id"); // get the comment ID from URL
+
+        if (!commentId) {
+            return c.json({ message: "Comment ID is required" }, 400);
+        }
+
+        // Delete the comment
+        await prisma.comment.delete({
+            where: { id: commentId },
+        });
+
+        return c.json({ message: "Comment deleted successfully" });
+    } catch (err: any) {
+        return c.json(
+            { message: "Failed to delete comment", error: err.message },
+            500
+        );
+    } finally {
+        await prisma.$disconnect();
+    }
+});
+
+blogRouter.get('/blog/fav', async (c) => {
+    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
+    try {
+        const authorId = c.get("userId");
+
+        const blogs = await prisma.fav.findMany({
+            where: { authorId },
+            select: {
+                post: {
+                    select: {
+                        id: true,
+                        title: true,
+                        content: true,
+                        published: true,
+                        createdAt: true,
+                        author: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+
+        return c.json({ blogs });
+    } catch (err: any) {
+        return c.json({ message: "Failed to fetch favorite status", error: err.message }, 500);
+    }
+})
+
+blogRouter.get("/blog/isFav/:id", async (c) => {
+    const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
+    try {
+        const postId = c.req.param("id");
+        const authorId = c.get("userId");
+
+        const fav = await prisma.fav.findUnique({
+            where: { authorId_postId: { authorId, postId: postId } },
+        });
+
+        return c.json({ isFav: !!fav });
+    } catch (err: any) {
+        return c.json({ message: "Failed to fetch favorite status", error: err.message }, 500);
+    }
+});
+
+
+blogRouter.post('/blog/markFav', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    try {
+        const body = await c.req.json();
+        const authorId = c.get("userId");
+
+        if (!body.id) return c.json({ message: "Blog ID is required" }, 411);
+
+        // Check if favorite already exists
+        const existingFav = await prisma.fav.findUnique({
+            where: { authorId_postId: { authorId, postId: body.id } },
+        });
+
+        if (existingFav) {
+            // Exists → remove it
+            await prisma.fav.delete({
+                where: { authorId_postId: { authorId, postId: body.id } },
+            });
+            return c.json({ message: "Blog unfavorited", isFav: false });
+        } else {
+            // Doesn’t exist → create it
+            await prisma.fav.create({
+                data: { authorId, postId: body.id },
+            });
+            return c.json({ message: "Blog marked as favorite", isFav: true });
+        }
+    } catch (err: any) {
+        return c.json({ message: "Failed to toggle favorite", error: err.message }, 500);
+    }
 })
 
 blogRouter.get("/:id", async (c) => {
@@ -543,15 +532,15 @@ blogRouter.get("/:id", async (c) => {
         where: {
             id: id,
         },
-        select:{
-            id:true,
-            title:true,
-            content:true,
-            published:true,
-            createdAt:true,
-            author:{
-                select:{
-                    name:true
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            published: true,
+            createdAt: true,
+            author: {
+                select: {
+                    name: true
                 }
             }
         }

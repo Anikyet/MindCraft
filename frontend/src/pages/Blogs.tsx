@@ -14,7 +14,7 @@ export const Blogs = () => {
   const {blogs, totalPages, loading} = usePageinationedFetch<any>(
     'api/v1/post/bulk',
     page,
-    2
+    5
   );
 
   if(loading){

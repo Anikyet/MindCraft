@@ -8,7 +8,6 @@ import { Appbar } from './components/Appbar'
 import { Publish } from './pages/Publish'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import Footer from './components/Footer'
-import { Dashboard } from './pages/Dashboard'
 import { Drafts } from './pages/Drafts'
 import { FavBlogs } from './pages/FavBlogs'
 import { Landing } from './pages/Landing'
@@ -26,7 +25,6 @@ function App() {
           <Route path='/signin' element={<Signin/>} />
           <Route path='/post/:id' element={ <Blog/> } />
           <Route path='/post' element={<Blogs/>} />
-          <Route path='/dash' element={<Dash />} />
           <Route path='/dashboard' element={<ProtectedRoute><Dash/></ProtectedRoute>} />
           <Route path='/drafts' element={<ProtectedRoute><Drafts/></ProtectedRoute>} />
           <Route path='/fav' element={<ProtectedRoute><FavBlogs/></ProtectedRoute>} />
